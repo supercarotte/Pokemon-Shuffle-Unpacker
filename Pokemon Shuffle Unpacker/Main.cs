@@ -115,7 +115,7 @@ namespace Pokemon_Shuffle_Unpacker
                 Directory.Delete(str, true);
             Directory.CreateDirectory(str);
             Open(path);
-            if (!Directory.EnumerateFiles(str).Any())
+            if (!Directory.EnumerateFiles(str).Any() && !Directory.EnumerateDirectories(str).Any())
                 Directory.Delete(str, true);
         }
 
@@ -162,6 +162,9 @@ namespace Pokemon_Shuffle_Unpacker
                 Directory.CreateDirectory(OutputDirectory);
                 AddText(RTB_Output, string.Format("Extracting {0} ({1} files)...", fi.Name, Archive.GetFileCount()));
                 string diglen = new string(Enumerable.Repeat('0', (int)(Math.Log10(Archive.GetFileCount()) + 1)).ToArray()); // Number of Digits for No-Rename Files.
+                string str = Path.GetDirectoryName(fi.FullName) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar + fi.Name + Path.DirectorySeparatorChar;
+                if (!Directory.Exists(str))
+                    Directory.CreateDirectory(str);
                 using (var fs = File.OpenRead(fi.FullName))
                 {
                     for (int i = 0; i < Archive.GetFileCount(); i++)
@@ -169,7 +172,7 @@ namespace Pokemon_Shuffle_Unpacker
                         byte[] ZipBuffer = new byte[Archive.GetFiles()[i].Length];
                         fs.Seek(Archive.GetFiles()[i].Offset, SeekOrigin.Begin);
                         fs.Read(ZipBuffer, 0, ZipBuffer.Length);
-                        string ZipName = Path.GetDirectoryName(fi.FullName) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar + fi.Name + "_" + i.ToString(diglen) + ".zip";
+                        string ZipName = str + i.ToString(diglen) + ".zip";
                         File.WriteAllBytes(ZipName, ZipBuffer);
                         bool Unknowns = false;
                         using (ZipFile Zip = new ZipFile(ZipName))
@@ -178,6 +181,7 @@ namespace Pokemon_Shuffle_Unpacker
                             {
                                 if (isEmptyString(Zip[0].FileName))
                                 {
+                                    Zip[0].FileName = i.ToString(diglen);
                                     if (Rename_Files)
                                     {
                                         if (FileNames.ContainsKey(Archive.GetFiles()[i].NameHash))
@@ -194,11 +198,8 @@ namespace Pokemon_Shuffle_Unpacker
                                                 AddLine(RTB_Output, string.Format("Zip {0} will not be deleted for debugging purposes.", i.ToString(diglen)));
                                             Unknowns = true;
                                             AddText(RTB_Output, "...");
-                                            Zip[0].FileName = i.ToString(diglen);
                                         }
                                     }
-                                    else
-                                        Zip[0].FileName = i.ToString(diglen);
                                 }
                                 Zip.Save();
                                 Zip.ExtractAll(OutputDirectory);
@@ -208,12 +209,14 @@ namespace Pokemon_Shuffle_Unpacker
                             File.Delete(ZipName);
                     }
                 }
-                AddLine(RTB_Output, "Complete!");
+                if (!Directory.EnumerateFiles(str).Any())
+                    Directory.Delete(str, true);
                 if (Delete_Archives)
                 {
                     AddLine(RTB_Output, "Deleting " + fi.Name);
                     File.Delete(fi.FullName);
                 }
+                AddLine(RTB_Output, "Complete!");
             }
             else
                 AddLine(RTB_Output, string.Format("Did not extract invalid archive '{0}'.", fi.Name));
