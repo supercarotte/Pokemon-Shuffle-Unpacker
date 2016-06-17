@@ -203,6 +203,8 @@ namespace Pokemon_Shuffle_Unpacker
                                 }
                                 Zip.Save();
                                 Zip.ExtractAll(OutputDirectory);
+                                //byte[] f = File.ReadAllBytes(OutputDirectory + Zip[0].FileName);
+                                //Console.WriteLine("\n" + System.Text.Encoding.Default.GetString(f.Skip(f[0x8]).Take(f[0xC]).ToArray()));
                             }
                         }
                         if (!Unknowns)
