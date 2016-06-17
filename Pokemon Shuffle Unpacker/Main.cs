@@ -61,13 +61,10 @@ namespace Pokemon_Shuffle_Unpacker
             {
                 threads++;
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string str;
                 foreach (string file in files)
-                {
-                    if (Directory.Exists(Path.GetDirectoryName(file + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar))
-                        Directory.Delete(Path.GetDirectoryName(file + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar, true);
-                    Directory.CreateDirectory(Path.GetDirectoryName(file + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar);
-                    Open(file);
-                };
+                    Process(file);
+                AddLine(RTB_Output, "Extracting Done !");
                 threads--;
             }).Start();
         }
@@ -102,21 +99,32 @@ namespace Pokemon_Shuffle_Unpacker
             new Thread(() =>
             {
                 threads++;
-                if (Directory.Exists(Path.GetDirectoryName(Selected_Path + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar))
-                    Directory.Delete(Path.GetDirectoryName(Selected_Path + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar, true);
-                Directory.CreateDirectory(Path.GetDirectoryName(Selected_Path + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar);
-                Open(Selected_Path);
+                Process(Selected_Path);
+                AddLine(RTB_Output, "Extracting Done !");
                 threads--;
             }).Start();
+        }
+
+        private void Process(string path)
+        {
+            string str = File.Exists(path)
+                         ? path
+                         : path + Path.DirectorySeparatorChar;
+            str = Path.GetDirectoryName(str) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar;
+            if (Directory.Exists(str))
+                Directory.Delete(str, true);
+            Directory.CreateDirectory(str);
+            Open(path);
+            if (!Directory.EnumerateFiles(str).Any())
+                Directory.Delete(str, true);
         }
 
         private void Open(string path)
         {
             if (Directory.Exists(path))
-                    OpenDir(new DirectoryInfo(path));
-                else if (File.Exists(path))
-                    if (Path.GetFileName(path).Length == 8 && IsHex(Path.GetFileName(path)))
-                        ExtractFile(new FileInfo(path));            
+                OpenDir(new DirectoryInfo(path));
+            else if (File.Exists(path) && Path.GetFileName(path).Length == 8 && IsHex(Path.GetFileName(path)))
+                ExtractFile(new FileInfo(path));
         }
 
         private void OpenDir(DirectoryInfo di)
@@ -209,7 +217,6 @@ namespace Pokemon_Shuffle_Unpacker
             }
             else
                 AddLine(RTB_Output, string.Format("Did not extract invalid archive '{0}'.", fi.Name));
-
         }
 
         private void AddText(RichTextBox RTB, string msg)
