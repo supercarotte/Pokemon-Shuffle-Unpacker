@@ -1,9 +1,0 @@
-D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\bin\Debug\Pokemon Shuffle Unpacker.exe
-D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\bin\Debug\Pokemon Shuffle Unpacker.pdb
-D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\bin\Debug\Ionic.Zip.dll
-D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\obj\x86\Debug\Pokemon Shuffle Unpacker.csprojResolveAssemblyReference.cache
-D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\obj\x86\Debug\Pokemon_Shuffle_Unpacker.Properties.Resources.resources
-D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\obj\x86\Debug\Pokemon Shuffle Unpacker.csproj.GenerateResource.Cache
-D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\obj\x86\Debug\Pokemon Shuffle Unpacker.exe
-D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\obj\x86\Debug\Pokemon Shuffle Unpacker.pdb
-D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\obj\x86\Debug\Pokemon_Shuffle_Unpacker.Main.resources
