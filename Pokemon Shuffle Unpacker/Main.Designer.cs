@@ -1,6 +1,6 @@
 ﻿namespace Pokemon_Shuffle_Unpacker
 {
-    partial class Form1
+    partial class Main
     {
         /// <summary>
         /// Required designer variable.

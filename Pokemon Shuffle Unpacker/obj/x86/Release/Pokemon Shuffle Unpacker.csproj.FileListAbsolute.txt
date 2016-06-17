@@ -1,0 +1,8 @@
+D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\bin\Release\Pokemon Shuffle Unpacker.exe
+D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\bin\Release\Pokemon Shuffle Unpacker.pdb
+D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\bin\Release\Ionic.Zip.dll
+D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\obj\x86\Release\Pokemon_Shuffle_Unpacker.Form1.resources
+D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\obj\x86\Release\Pokemon_Shuffle_Unpacker.Properties.Resources.resources
+D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\obj\x86\Release\Pokemon Shuffle Unpacker.csproj.GenerateResource.Cache
+D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\obj\x86\Release\Pokemon Shuffle Unpacker.exe
+D:\Users\Alix\Documents\GitHub\Pokemon-Shuffle-Unpacker\Pokemon Shuffle Unpacker\obj\x86\Release\Pokemon Shuffle Unpacker.pdb

@@ -15,16 +15,16 @@ using Ionic.Zip;
 
 namespace Pokemon_Shuffle_Unpacker
 {
-    public partial class Form1 : Form
+    public partial class Main : Form
     {
-        public Form1()
+        public Main()
         {
             InitializeComponent();
             this.AllowDrop = this.RTB_Output.AllowDrop = true;
-            this.DragEnter += new DragEventHandler(Form1_DragEnter);
-            this.RTB_Output.DragEnter += new DragEventHandler(Form1_DragEnter);
-            this.DragDrop += new DragEventHandler(Form1_DragDrop);
-            this.RTB_Output.DragDrop += new DragEventHandler(Form1_DragDrop);
+            this.DragEnter += new DragEventHandler(Main_DragEnter);
+            this.RTB_Output.DragEnter += new DragEventHandler(Main_DragEnter);
+            this.DragDrop += new DragEventHandler(Main_DragDrop);
+            this.RTB_Output.DragDrop += new DragEventHandler(Main_DragDrop);
             FileNames = GetDictionary(Resources.File_Names);
             ArchiveNames = GetDictionary(Resources.Archive_Names);
             MessageRegions = GetDictionary(Resources.Message_Regions);
@@ -44,12 +44,13 @@ namespace Pokemon_Shuffle_Unpacker
 
         private volatile int threads = 0;
 
-        private void Form1_DragEnter(object sender, DragEventArgs e)
+        private void Main_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Copy;
         }
 
-        private void Form1_DragDrop(object sender, DragEventArgs e)
+        private void Main_DragDrop(object sender, DragEventArgs e)
         {
             if (threads > 0)
             {
@@ -61,7 +62,12 @@ namespace Pokemon_Shuffle_Unpacker
                 threads++;
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 foreach (string file in files)
+                {
+                    if (Directory.Exists(Path.GetDirectoryName(file + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar))
+                        Directory.Delete(Path.GetDirectoryName(file + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar, true);
+                    Directory.CreateDirectory(Path.GetDirectoryName(file + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar);
                     Open(file);
+                };
                 threads--;
             }).Start();
         }
@@ -96,6 +102,9 @@ namespace Pokemon_Shuffle_Unpacker
             new Thread(() =>
             {
                 threads++;
+                if (Directory.Exists(Path.GetDirectoryName(Selected_Path + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar))
+                    Directory.Delete(Path.GetDirectoryName(Selected_Path + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar, true);
+                Directory.CreateDirectory(Path.GetDirectoryName(Selected_Path + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar);
                 Open(Selected_Path);
                 threads--;
             }).Start();
@@ -104,10 +113,10 @@ namespace Pokemon_Shuffle_Unpacker
         private void Open(string path)
         {
             if (Directory.Exists(path))
-                OpenDir(new DirectoryInfo(path));
-            else if (File.Exists(path))
-                if (Path.GetFileName(path).Length == 8 && IsHex(Path.GetFileName(path)))
-                    ExtractFile(new FileInfo(path));
+                    OpenDir(new DirectoryInfo(path));
+                else if (File.Exists(path))
+                    if (Path.GetFileName(path).Length == 8 && IsHex(Path.GetFileName(path)))
+                        ExtractFile(new FileInfo(path));            
         }
 
         private void OpenDir(DirectoryInfo di)
@@ -123,6 +132,7 @@ namespace Pokemon_Shuffle_Unpacker
         private void ExtractFile(FileInfo fi)
         {
             uint key = uint.Parse(fi.Name, System.Globalization.NumberStyles.AllowHexSpecifier);
+            //Console.WriteLine("\n==========\n" + string.Format("{0:X8}", fi.Name) + "\n==========");
             ShuffleARC Archive = new ShuffleARC(fi.FullName);
             if (Archive.IsValid())
             {
@@ -151,15 +161,14 @@ namespace Pokemon_Shuffle_Unpacker
                         byte[] ZipBuffer = new byte[Archive.GetFiles()[i].Length];
                         fs.Seek(Archive.GetFiles()[i].Offset, SeekOrigin.Begin);
                         fs.Read(ZipBuffer, 0, ZipBuffer.Length);
-                        string ZipName = OutputDirectory + i.ToString(diglen) + ".zip";
+                        string ZipName = Path.GetDirectoryName(fi.FullName) + Path.DirectorySeparatorChar + "_debug" + Path.DirectorySeparatorChar + fi.Name + "_" + i.ToString(diglen) + ".zip";
                         File.WriteAllBytes(ZipName, ZipBuffer);
                         bool Unknowns = false;
                         using (ZipFile Zip = new ZipFile(ZipName))
                         {
                             if (Zip.ToList().Count == 1)
                             {
-                                string FileName = Zip[0].FileName;
-                                if (isEmptyString(FileName))
+                                if (isEmptyString(Zip[0].FileName))
                                 {
                                     if (Rename_Files)
                                     {
@@ -177,6 +186,7 @@ namespace Pokemon_Shuffle_Unpacker
                                                 AddLine(RTB_Output, string.Format("Zip {0} will not be deleted for debugging purposes.", i.ToString(diglen)));
                                             Unknowns = true;
                                             AddText(RTB_Output, "...");
+                                            Zip[0].FileName = i.ToString(diglen);
                                         }
                                     }
                                     else
@@ -293,7 +303,7 @@ namespace Pokemon_Shuffle_Unpacker
                 return;
             }
             this.FileName = Path.GetFileNameWithoutExtension(path);
-            if (FileName.Length != 8 || !Form1.IsHex(FileName))
+            if (FileName.Length != 8 || !Main.IsHex(FileName))
             {
                 this.Valid = false;
                 return;
@@ -328,6 +338,7 @@ namespace Pokemon_Shuffle_Unpacker
                 for (int i = 0; i < this.FileCount; i++)
                 {
                     uint nh = br.ReadUInt32();
+                    //Console.WriteLine("{0:x8}", nh);
                     br.ReadUInt32();
                     uint len = br.ReadUInt32();
                     uint ofs = br.ReadUInt32();
